@@ -1,0 +1,9 @@
+out/
+Problems/*.java
+.idea/
+
+/*.dot
+*.txt
+*~
+*.out
+/*.pdf
