@@ -8947,3 +8947,4 @@ int main()
         calculate_output(input);
     }
 }
+#endif
