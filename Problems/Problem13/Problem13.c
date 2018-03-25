@@ -3,7 +3,12 @@
 #include <math.h>
 #include <stdlib.h>
 
-    extern void __VERIFIER_error(int);
+#define KLEE
+
+void __VERIFIER_error(int i){
+        printf("ERROR %d\n", i);
+        fflush(stdout);
+}
 
 	// inputs
 	int inputs[] = {5,6,1,7,2,8,3,9,10,4};
@@ -8063,6 +8068,23 @@
     	fprintf(stderr, "Invalid input: %d\n", input); 
 }
 
+#ifdef KLEE
+int main()
+{
+    int length = 20;
+    int program[length];
+    klee_make_symbolic(program, sizeof(program), "program");
+
+    // main i/o-loop
+    for (int i = 0; i < length; ++i) {
+        // read input
+        int input = program[i];
+    if((input != 1) && (input != 2) && (input != 3) && (input != 4) && (input != 5) && (input != 6) && (input != 7) && (input != 8) && (input != 9) && (input != 10)) return 0;
+        // operate eca engine
+        calculate_output(input);
+    }
+}
+#else
 int main()
 {
     // main i/o-loop
@@ -8077,3 +8099,4 @@ int main()
         calculate_output(input);
     }
 }
+#endif
