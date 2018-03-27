@@ -14,35 +14,41 @@ import static RERSlearner.BasicLearner.*;
  * Created by rick on 17/03/2017.
  */
 public class RERSExperiment {
-    final static String path = "/home/gregory/git/Learning/Problems/";
+    final static String path = "/home/gregory/git/learning/Problems/";
 
     public static void executeProgram(final int id) throws IOException {
         Map<Integer, String[]> map = new HashMap<>();
-        map.put(10, new String[]{"1","2","3","4","5"});
+        map.put(10, new String[]{"0","1","2","3","4","5"});
         map.put(11, new String[]{"1","2","3","4","5","6","7","8","9","10"});
 
+//        for (LearningMethod lm : LearningMethod.values()) {
+//            for (TestingMethod tm : TestingMethod.values()) {
+//                if (tm == TestingMethod.UserQueries) {
+//                    continue;
+//                }
+        LearningMethod lm = LearningMethod.RivestSchapire;
+        TestingMethod tm = TestingMethod.UserQueries;
 
-        for (LearningMethod lm : LearningMethod.values()) {
-            for (TestingMethod tm : TestingMethod.values()) {
-                if (tm == TestingMethod.UserQueries) {
-                    continue;
-                }
-                new Thread(() -> {
-                    final String logfile = path + "Problem" + id + "/" +  lm + "/" + tm + "/" + "log.txt";
-                    new File(logfile).getParentFile().mkdirs();
+        new Thread(() -> {
+            long start = System.currentTimeMillis();
 
-                    try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logfile)))) {
-                        run(id, lm, tm, map.get(id), out);
-                        out.flush();
-                        out.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            final String logfile = path + "Problem" + id + "/" +  lm + "/" + tm + "/" + "log.txt";
+            new File(logfile).getParentFile().mkdirs();
 
-
-                }).start();
+            try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logfile)))) {
+                run(id, lm, tm, map.get(id), out);
+                out.flush();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
+
+            System.out.println("Finished problem " + id + " using LM " + lm + " and TM " + tm +
+                    "\nDuration: " + (System.currentTimeMillis() - start) /1000 + " seconds\n");
+
+        }).start();
+//            }
+//        }
     }
 
     public static void run(final int id, final LearningMethod lm, final TestingMethod tm, final String[] nums, PrintWriter out) {
@@ -72,7 +78,5 @@ public class RERSExperiment {
      */
     public static void main(String [] args) throws IOException {
         RERSExperiment.executeProgram(10);
-        RERSExperiment.executeProgram(11);
-
     }
 }
