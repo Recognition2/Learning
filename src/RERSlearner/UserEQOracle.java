@@ -8,6 +8,7 @@ import net.automatalib.words.Word;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Created by ramon on 12-12-16.
@@ -31,7 +32,15 @@ public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?
                 return null;
             } else {
                 // Switch between space and comma separated
-                String[] sutInputs = userInput.split(userInput.contains(",") ? ",\\s" : "\\s");
+                String[] rawInputs = userInput.split(userInput.contains(",") ? ",\\s" : "\\s");
+
+                ArrayList<String> inputs = new ArrayList<>();
+                for (String value : rawInputs) {
+                    if (allowedInputs.contains(value)) {
+                        inputs.add(value);
+                    }
+                }
+                String[] sutInputs = (String[]) inputs.toArray();
                 if (sutInputs.length != 0) {
                     Word<String> input = Word.fromArray(sutInputs, 0, sutInputs.length);
                     Word<String> hypOutput = hypothesis.computeOutput(input);
