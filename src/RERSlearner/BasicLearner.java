@@ -133,12 +133,12 @@ public class BasicLearner {
 	public static void runSimpleExperiment(
 			LearningAlgorithm<MealyMachine<?, String, ?, String>, String, Word<String>> learner,
 			EquivalenceOracle<MealyMachine<?, String, ?, String>, String, Word<String>> eqOracle,
-			Alphabet<String> alphabet, PrintWriter out, String path) throws IOException {
+			Alphabet<String> alphabet) throws IOException {
 		MealyExperiment<String, String> experiment
 				= new MealyExperiment<String, String>(learner, eqOracle, alphabet);
 		experiment.run();
-		out.println("Ran " + experiment.getRounds().getCount() + " rounds");
-		produceOutput(path + FINAL_MODEL_FILENAME, experiment.getFinalHypothesis(), alphabet, true);
+		System.out.println("Ran " + experiment.getRounds().getCount() + " rounds");
+		produceOutput(FINAL_MODEL_FILENAME, experiment.getFinalHypothesis(), alphabet, true);
 	}
 
 	/**
@@ -153,13 +153,11 @@ public class BasicLearner {
 			SUL<String,String> sul,
 			LearningMethod learningMethod,
 			TestingMethod testingMethod,
-			Collection<String> alphabet,
-			PrintWriter out,
-			String path
+			Collection<String> alphabet
 			) throws IOException {
 		Alphabet<String> learlibAlphabet = new SimpleAlphabet<String>(alphabet);
 		LearningSetup learningSetup = new LearningSetup(sul, learningMethod, testingMethod, learlibAlphabet);
-		runSimpleExperiment(learningSetup.learner, learningSetup.eqOracle, learlibAlphabet, out, path);
+		runSimpleExperiment(learningSetup.learner, learningSetup.eqOracle, learlibAlphabet);
 	}
 	
 	/**
@@ -176,8 +174,7 @@ public class BasicLearner {
 			LearningAlgorithm<MealyMachine<?, String, ?, String>, String, Word<String>> learner,
 			EquivalenceOracle<MealyMachine<?, String, ?, String>, String, Word<String>> eqOracle,
 			Counter nrSymbols, Counter nrResets,
-			Alphabet<String> alphabet,
-			PrintWriter out, String path) throws IOException {
+			Alphabet<String> alphabet) throws IOException {
 		try {
 			// prepare some counters for printing statistics
 			int stage = 0;
@@ -189,19 +186,18 @@ public class BasicLearner {
 			while(true) {
 				// store hypothesis as file
 				if(saveAllHypotheses) {
-					String outputFilename = path + INTERMEDIATE_HYPOTHESIS_FILENAME + stage;
+					String outputFilename = INTERMEDIATE_HYPOTHESIS_FILENAME + stage;
 					produceOutput(outputFilename, learner.getHypothesisModel(), alphabet, false);
-					out.println("model size " + learner.getHypothesisModel().getStates().size());
+					System.out.println("model size " + learner.getHypothesisModel().getStates().size());
 				}
 	
 				// Print statistics
-				out.println(stage + ": " + Calendar.getInstance().getTime());
+				System.out.println(stage + ": " + Calendar.getInstance().getTime());
 				// Log number of queries/symbols
-				out.println("Hypothesis size: " + learner.getHypothesisModel().size() + " states");
+				System.out.println("Hypothesis size: " + learner.getHypothesisModel().size() + " states");
 				long roundResets = nrResets.getCount() - lastNrResetsValue, roundSymbols = nrSymbols.getCount() - lastNrSymbolsValue;
-				out.println("learning queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
+				System.out.println("learning queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
 						+ "(" + roundResets + "/" + roundSymbols + " this learning round)");
-				out.flush();
 				lastNrResetsValue = nrResets.getCount();
 				lastNrSymbolsValue = nrSymbols.getCount();
 				
@@ -211,23 +207,22 @@ public class BasicLearner {
 				// Log number of queries/symbols
 				roundResets = nrResets.getCount() - lastNrResetsValue;
 				roundSymbols = nrSymbols.getCount() - lastNrSymbolsValue;
-				out.println("testing queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
+				System.out.println("testing queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
 						+ "(" + roundResets + "/" + roundSymbols + " this testing round)");
 				lastNrResetsValue = nrResets.getCount();
 				lastNrSymbolsValue = nrSymbols.getCount();
 				
 				if(ce == null) {
 					// No counterexample found, stop learning
-					out.println("\nFinished learning!");
-					produceOutput(path + FINAL_MODEL_FILENAME, learner.getHypothesisModel(), alphabet, true);
+					System.out.println("\nFinished learning!");
+					produceOutput(FINAL_MODEL_FILENAME, learner.getHypothesisModel(), alphabet, true);
 					break;
 				} else {
 					// Counterexample found, rinse and repeat
-					out.println();
+					System.out.println();
 					stage++;
 					learner.refineHypothesis(ce);
 				}
-				out.flush();
 			}
 		} catch (Exception e) {
 			String errorHypName = "hyp.before.crash.dot";
@@ -250,12 +245,11 @@ public class BasicLearner {
 			SUL<String,String> sul,
 			LearningMethod learningMethod,
 			TestingMethod testingMethod,
-			Collection<String> alphabet,
-			PrintWriter out, String path
+			Collection<String> alphabet
 		) throws IOException {
 		Alphabet<String> learnlibAlphabet = new SimpleAlphabet<String>(alphabet);
 		LearningSetup learningSetup = new LearningSetup(sul, learningMethod, testingMethod, learnlibAlphabet);
-		runControlledExperiment(learningSetup.learner, learningSetup.eqOracle, learningSetup.nrSymbols, learningSetup.nrResets, learnlibAlphabet, out, path);
+		runControlledExperiment(learningSetup.learner, learningSetup.eqOracle, learningSetup.nrSymbols, learningSetup.nrResets, learnlibAlphabet);
 	}
 
 	/**

@@ -12716,10 +12716,10 @@ int main()
     {
         // read input
         int input;
-        if (scanf("%d", &input) != 1) return 0;        
+        scanf("%d", &input);        
         // operate eca engine
         if((input != 13) && (input != 12) && (input != 2) && (input != 5) && (input != 15) && (input != 11) && (input != 7) && (input != 9) && (input != 6) && (input != 14) && (input != 10) && (input != 4) && (input != 8) && (input != 1) && (input != 3))
-          return 0;
+          return -2;
         calculate_output(input);
     }
 }

@@ -20,22 +20,22 @@ public class ExampleExperiment {
         // For a SUL over a socket, use the SocketSUL-class
         // You can also program an own SUL-class if you extend SUL<String,String> (or SUL<S,T> in
         // general, with S and T the input and output types - but this class assumes strings)
-//        SUL<String,String> sul = new ExampleSUL();
-//
-//        // the input alphabet
-//        Collection<String> inputAlphabet = ImmutableSet.of("a", "b", "c");
-//
-//        try {
-//            // runControlledExperiment for detailed statistics, runSimpleExperiment for just the result
-//            BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.TTT, BasicLearner.TestingMethod.RandomWalk, inputAlphabet);
-//        } finally {
-//            if (sul instanceof AutoCloseable) {
-//                try {
-//                    ((AutoCloseable) sul).close();
-//                } catch (Exception exception) {
-//                    // should not happen
-//                }
-//            }
-//        }
+        SUL<String,String> sul = new ExampleSUL();
+
+        // the input alphabet
+        Collection<String> inputAlphabet = ImmutableSet.of("a", "b", "c");
+
+        try {
+            // runControlledExperiment for detailed statistics, runSimpleExperiment for just the result
+            BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.TTT, BasicLearner.TestingMethod.RandomWalk, inputAlphabet);
+        } finally {
+            if (sul instanceof AutoCloseable) {
+                try {
+                    ((AutoCloseable) sul).close();
+                } catch (Exception exception) {
+                    // should not happen
+                }
+            }
+        }
     }
 }
