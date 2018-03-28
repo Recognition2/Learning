@@ -30,12 +30,9 @@ public class RERSExperiment {
             this.in = in;
             this.out = out;
             this.path = path.endsWith("/") ? path : path + '/' ;
-            this.resultFile = path + "results/";
+            this.resultFile = this.path + "results/";
             new File(this.resultFile).mkdirs();
             this.inputs = inputs;
-            if (!this.inputs.contains("0")) {
-                this.inputs.add("0");
-            }
         }
 
         public SUL<String, String> getSUL() {
@@ -47,11 +44,11 @@ public class RERSExperiment {
 
     private static HashMap<Integer, ExperimentSetup> experiments = new HashMap<>();
     static {
-        experiments.put(10, new ExperimentSetup("Problems/Problem10", ImmutableSet.of("1","2","3","4","5")));
+        experiments.put(10, new ExperimentSetup("Problems/Problem10", ImmutableSet.of("0","1","2","3","4","5")));
     }
 
     /**
-     * Example of how to learn a Mealy machine model from one of the compliled RERS programs.
+     * Example of how to learn a Mealy machine model from one of the compiled RERS programs.
      * @throws IOException
      */
     public static void run(ExperimentSetup exp, BasicLearner.LearningMethod lm, BasicLearner.TestingMethod tm) {
@@ -82,6 +79,7 @@ public class RERSExperiment {
             if (!experiments.containsKey(experiment)) throw new IllegalArgumentException("Experiment " + experiment + " not configured");
             for (BasicLearner.LearningMethod learningMethod : learningMethods) {
                 for (BasicLearner.TestingMethod testingMethod : testingMethods) {
+                    System.out.println("Started learning for experiment " + experiment + " with " + learningMethod + " using " + testingMethod);
                     run(experiments.get(experiment), learningMethod, testingMethod);
                 }
             }
