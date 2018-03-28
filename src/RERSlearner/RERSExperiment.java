@@ -3,10 +3,7 @@ package RERSlearner;
 import com.google.common.collect.ImmutableSet;
 import de.learnlib.api.SUL;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -24,6 +21,10 @@ public class RERSExperiment {
 
         public ExperimentSetup(String path, Collection<String> inputs) {
             this(path, inputs, System.in, System.out);
+        }
+
+        public ExperimentSetup(String path, Collection<String> inputs, String inFile, String outFile) throws IOException {
+            this(path, inputs, new FileInputStream(new File(inFile)), new PrintStream(new File(outFile)));
         }
 
         public ExperimentSetup(String path, Collection<String> inputs, InputStream in, PrintStream out){

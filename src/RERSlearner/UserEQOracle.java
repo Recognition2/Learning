@@ -8,7 +8,6 @@ import net.automatalib.words.Word;
 
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Created by ramon on 12-12-16.
@@ -27,6 +26,7 @@ public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?
         System.out.println("Enter space-separated input sequence to try as a counter-example, or 'stop' to stop learning");
         Scanner userInputScanner = new Scanner(in);
         do {
+            if (userInputScanner.hasNext()) return null;
             String userInput = userInputScanner.nextLine();
             if (userInput.equals("stop")) {
                 return null;
