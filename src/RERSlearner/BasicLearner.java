@@ -1,9 +1,6 @@
 package RERSlearner;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Random;
@@ -106,7 +103,7 @@ public class BasicLearner {
 	}
 
 	public static EquivalenceOracle<MealyMachine<?, String, ?, String>, String, Word<String>> loadTester(
-			TestingMethod testMethod, SUL<String,String> sul, MealyMembershipOracle<String,String> sulOracle) {
+			TestingMethod testMethod, SUL<String,String> sul, MealyMembershipOracle<String,String> sulOracle, InputStream in) {
 		switch (testMethod){
 			// simplest method, but doesn't perform well in practice, especially for large models
 			case RandomWalk:
@@ -117,7 +114,7 @@ public class BasicLearner {
 			case WpMethod:
 				return new WpMethodEQOracle.MealyWpMethodEQOracle<>(w_wp_methods_maxDepth, sulOracle);
 			case UserQueries:
-				return new UserEQOracle(sul);
+				return new UserEQOracle(sul, in);
 			default:
 				throw new RuntimeException("No test oracle selected!");
 		}
@@ -153,10 +150,11 @@ public class BasicLearner {
 			SUL<String,String> sul,
 			LearningMethod learningMethod,
 			TestingMethod testingMethod,
-			Collection<String> alphabet
+			Collection<String> alphabet,
+			InputStream in
 			) throws IOException {
 		Alphabet<String> learlibAlphabet = new SimpleAlphabet<String>(alphabet);
-		LearningSetup learningSetup = new LearningSetup(sul, learningMethod, testingMethod, learlibAlphabet);
+		LearningSetup learningSetup = new LearningSetup(sul, learningMethod, testingMethod, learlibAlphabet, in);
 		runSimpleExperiment(learningSetup.learner, learningSetup.eqOracle, learlibAlphabet);
 	}
 	
@@ -168,13 +166,15 @@ public class BasicLearner {
 	 * @param nrSymbols A counter for the number of symbols that have been sent to the SUL (for statistics)
 	 * @param nrResets A counter for the number of resets that have been sent to the SUL (for statistics)
 	 * @param alphabet Input alphabet
-	 * @throws IOException
+	 * @param resultFilename
+	 * @param in
+	 * @param out @throws IOException
 	 */
 	public static void runControlledExperiment(
 			LearningAlgorithm<MealyMachine<?, String, ?, String>, String, Word<String>> learner,
 			EquivalenceOracle<MealyMachine<?, String, ?, String>, String, Word<String>> eqOracle,
 			Counter nrSymbols, Counter nrResets,
-			Alphabet<String> alphabet) throws IOException {
+			Alphabet<String> alphabet, String resultFilename, InputStream in, PrintStream out) throws IOException {
 		try {
 			// prepare some counters for printing statistics
 			int stage = 0;
@@ -186,17 +186,17 @@ public class BasicLearner {
 			while(true) {
 				// store hypothesis as file
 				if(saveAllHypotheses) {
-					String outputFilename = INTERMEDIATE_HYPOTHESIS_FILENAME + stage;
+					String outputFilename = resultFilename + INTERMEDIATE_HYPOTHESIS_FILENAME + stage;
 					produceOutput(outputFilename, learner.getHypothesisModel(), alphabet, false);
-					System.out.println("model size " + learner.getHypothesisModel().getStates().size());
+					out.println("model size " + learner.getHypothesisModel().getStates().size());
 				}
 	
 				// Print statistics
-				System.out.println(stage + ": " + Calendar.getInstance().getTime());
+				out.println(stage + ": " + Calendar.getInstance().getTime());
 				// Log number of queries/symbols
-				System.out.println("Hypothesis size: " + learner.getHypothesisModel().size() + " states");
+				out.println("Hypothesis size: " + learner.getHypothesisModel().size() + " states");
 				long roundResets = nrResets.getCount() - lastNrResetsValue, roundSymbols = nrSymbols.getCount() - lastNrSymbolsValue;
-				System.out.println("learning queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
+				out.println("learning queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
 						+ "(" + roundResets + "/" + roundSymbols + " this learning round)");
 				lastNrResetsValue = nrResets.getCount();
 				lastNrSymbolsValue = nrSymbols.getCount();
@@ -207,25 +207,25 @@ public class BasicLearner {
 				// Log number of queries/symbols
 				roundResets = nrResets.getCount() - lastNrResetsValue;
 				roundSymbols = nrSymbols.getCount() - lastNrSymbolsValue;
-				System.out.println("testing queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
+				out.println("testing queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
 						+ "(" + roundResets + "/" + roundSymbols + " this testing round)");
 				lastNrResetsValue = nrResets.getCount();
 				lastNrSymbolsValue = nrSymbols.getCount();
 				
 				if(ce == null) {
 					// No counterexample found, stop learning
-					System.out.println("\nFinished learning!");
-					produceOutput(FINAL_MODEL_FILENAME, learner.getHypothesisModel(), alphabet, true);
+					out.println("\nFinished learning!");
+					produceOutput(resultFilename + FINAL_MODEL_FILENAME, learner.getHypothesisModel(), alphabet, true);
 					break;
 				} else {
 					// Counterexample found, rinse and repeat
-					System.out.println();
+					out.println();
 					stage++;
 					learner.refineHypothesis(ce);
 				}
 			}
 		} catch (Exception e) {
-			String errorHypName = "hyp.before.crash.dot";
+			String errorHypName = resultFilename + "hyp.before.crash.dot";
 			produceOutput(errorHypName, learner.getHypothesisModel(), alphabet, true);
 			throw e;
 		}
@@ -238,18 +238,19 @@ public class BasicLearner {
 	 * @param learningMethod One of the default learning methods from this class
 	 * @param testingMethod One of the default testing methods from this class
 	 * @param alphabet Input alphabet
-	 * @param alphabet Input alphabet
-	 * @throws IOException
+	 * @param resultFilename
+	 * @param in
+	 * @param out @throws IOException
 	 */
 	public static void runControlledExperiment(
-			SUL<String,String> sul,
+			SUL<String, String> sul,
 			LearningMethod learningMethod,
 			TestingMethod testingMethod,
-			Collection<String> alphabet
-		) throws IOException {
+			Collection<String> alphabet,
+			String resultFilename, InputStream in, PrintStream out) throws IOException {
 		Alphabet<String> learnlibAlphabet = new SimpleAlphabet<String>(alphabet);
-		LearningSetup learningSetup = new LearningSetup(sul, learningMethod, testingMethod, learnlibAlphabet);
-		runControlledExperiment(learningSetup.learner, learningSetup.eqOracle, learningSetup.nrSymbols, learningSetup.nrResets, learnlibAlphabet);
+		LearningSetup learningSetup = new LearningSetup(sul, learningMethod, testingMethod, learnlibAlphabet, in);
+		runControlledExperiment(learningSetup.learner, learningSetup.eqOracle, learningSetup.nrSymbols, learningSetup.nrResets, learnlibAlphabet, resultFilename, in , out);
 	}
 
 	/**
@@ -284,7 +285,7 @@ public class BasicLearner {
 		public final LearningAlgorithm<MealyMachine<?, String, ?, String>, String, Word<String>> learner;
 		public final Counter nrSymbols, nrResets;
 
-		public LearningSetup(SUL<String,String> sul, LearningMethod learningMethod, TestingMethod testingMethod, Alphabet<String> alphabet) {
+		public LearningSetup(SUL<String,String> sul, LearningMethod learningMethod, TestingMethod testingMethod, Alphabet<String> alphabet, InputStream in) {
 			// Wrap the SUL in a detector for non-determinism
 			SUL<String,String> nonDetSul = new NonDeterminismCheckingSUL<String,String>(sul);
 			// Wrap the SUL in counters for symbols/resets, so that we can record some statistics
@@ -298,7 +299,7 @@ public class BasicLearner {
 			MealyMembershipOracle<String,String> sulOracle = new SULOracle<>(sul);
 
 			// Choosing an equivalence oracle
-			eqOracle = loadTester(testingMethod, sul, sulOracle);
+			eqOracle = loadTester(testingMethod, sul, sulOracle, in);
 
 			// Choosing a learner
 			learner = loadLearner(learningMethod, sulOracle, alphabet);

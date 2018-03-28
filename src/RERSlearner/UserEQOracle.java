@@ -6,6 +6,7 @@ import de.learnlib.oracles.DefaultQuery;
 import net.automatalib.automata.transout.MealyMachine;
 import net.automatalib.words.Word;
 
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -13,21 +14,24 @@ import java.util.*;
  */
 public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?, String>, String, Word<String>> {
     private final SUL<String,String> sul;
+    private final InputStream in;
 
-    public UserEQOracle(SUL<String,String> sul) {
+    public UserEQOracle(SUL<String, String> sul, InputStream in) {
+        this.in = in;
         this.sul = sul;
     }
 
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> allowedInputs) {
         System.out.println("Enter space-separated input sequence to try as a counter-example, or 'stop' to stop learning");
-        Scanner userInputScanner = new Scanner(System.in);
+        Scanner userInputScanner = new Scanner(in);
         do {
             String userInput = userInputScanner.nextLine();
             if (userInput.equals("stop")) {
                 return null;
             } else {
-                String[] sutInputs = userInput.split("\\s");
+                // Switch between space and comma separated
+                String[] sutInputs = userInput.split(userInput.contains(",") ? ",\\s" : "\\s");
                 if (sutInputs.length != 0) {
                     Word<String> input = Word.fromArray(sutInputs, 0, sutInputs.length);
                     Word<String> hypOutput = hypothesis.computeOutput(input);
