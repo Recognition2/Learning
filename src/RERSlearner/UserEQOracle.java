@@ -26,7 +26,7 @@ public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?
         System.out.println("Enter space-separated input sequence to try as a counter-example, or 'stop' to stop learning");
         Scanner userInputScanner = new Scanner(in);
         do {
-            if (userInputScanner.hasNext()) return null;
+//            if (userInputScanner.hasNext()) return null;
             String userInput = userInputScanner.nextLine();
             if (userInput.equals("stop")) {
                 return null;
@@ -40,9 +40,10 @@ public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?
                         inputs.add(value);
                     }
                 }
-                String[] sutInputs = (String[]) inputs.toArray();
-                if (sutInputs.length != 0) {
-                    Word<String> input = Word.fromArray(sutInputs, 0, sutInputs.length);
+
+                if (!inputs.isEmpty()) {
+
+                    Word<String> input =  Word.fromList(inputs);
                     Word<String> hypOutput = hypothesis.computeOutput(input);
                     Word<String> sulOutput = sulOutput(input);
                     System.out.println("SUL output: " + sulOutput);

@@ -45,7 +45,11 @@ public class RERSExperiment {
 
     private static HashMap<Integer, ExperimentSetup> experiments = new HashMap<>();
     static {
-        experiments.put(10, new ExperimentSetup("Problems/Problem10", ImmutableSet.of("1","2","3","4","5")));
+        try {
+            experiments.put(10, new ExperimentSetup("Problems/Problem10", ImmutableSet.of("1", "2", "3", "4", "5"), new FileInputStream(new File("")), new PrintStream(new File(""))));
+        } catch (FileNotFoundException e) {
+
+        }
     }
 
     /**
