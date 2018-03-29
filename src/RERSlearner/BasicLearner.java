@@ -56,7 +56,7 @@ public class BasicLearner {
 	 * For controlled experiments only: store every hypotheses as a file. Useful for 'debugging'
 	 * if the learner does not terminate (hint: the TTT-algorithm produces many hypotheses).
 	 */
-	public static boolean saveAllHypotheses = true;
+	public static boolean saveAllHypotheses = false;
 	/**
 	 * For random walk, the chance to reset after every input
 	 */
@@ -198,6 +198,7 @@ public class BasicLearner {
 				long roundResets = nrResets.getCount() - lastNrResetsValue, roundSymbols = nrSymbols.getCount() - lastNrSymbolsValue;
 				out.println("learning queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
 						+ "(" + roundResets + "/" + roundSymbols + " this learning round)");
+				out.flush();
 				lastNrResetsValue = nrResets.getCount();
 				lastNrSymbolsValue = nrSymbols.getCount();
 				
@@ -209,12 +210,14 @@ public class BasicLearner {
 				roundSymbols = nrSymbols.getCount() - lastNrSymbolsValue;
 				out.println("testing queries/symbols: " + nrResets.getCount() + "/" + nrSymbols.getCount()
 						+ "(" + roundResets + "/" + roundSymbols + " this testing round)");
+				out.flush();
 				lastNrResetsValue = nrResets.getCount();
 				lastNrSymbolsValue = nrSymbols.getCount();
 				
 				if(ce == null) {
 					// No counterexample found, stop learning
 					out.println("\nFinished learning!");
+					out.flush();
 					produceOutput(resultFilename + FINAL_MODEL_FILENAME, learner.getHypothesisModel(), alphabet, true);
 					break;
 				} else {
@@ -227,6 +230,8 @@ public class BasicLearner {
 		} catch (Exception e) {
 			String errorHypName = resultFilename + "hyp.before.crash.dot";
 			produceOutput(errorHypName, learner.getHypothesisModel(), alphabet, true);
+			out.println("Crashed!");
+			out.flush();
 			throw e;
 		}
 	}

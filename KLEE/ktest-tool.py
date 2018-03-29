@@ -1,12 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # ===-- ktest-tool --------------------------------------------------------===##
-# 
+#
 #                      The KLEE Symbolic Virtual Machine
-# 
+#
 #  This file is distributed under the University of Illinois Open Source
 #  License. See LICENSE.TXT for details.
-# 
+#
 # ===----------------------------------------------------------------------===##
 #
 #
@@ -30,7 +30,7 @@ class KTest:
         if not os.path.exists(path):
             print("ERROR: file %s not found" % (path))
             sys.exit(1)
-            
+
         f = open(path,'rb')
         hdr = f.read(5)
         if len(hdr)!=5 or (hdr!=b'KTEST' and hdr != b"BOUT\n"):
@@ -43,7 +43,7 @@ class KTest:
         for i in range(numArgs):
             size, = struct.unpack('>i', f.read(4))
             args.append(str(f.read(size).decode(encoding='ascii')))
-            
+
         if version >= 2:
             symArgvs, = struct.unpack('>i', f.read(4))
             symArgvLen, = struct.unpack('>i', f.read(4))
@@ -65,7 +65,7 @@ class KTest:
         # Augment with extra filename field
         b.filename = path
         return b
-    
+
     def __init__(self, version, args, symArgvs, symArgvLen, objects):
         self.version = version
         self.symArgvs = symArgvs
@@ -81,27 +81,27 @@ class KTest:
         if program_name.endswith('.bc'):
           program_name = program_name[:-3]
         self.programName = program_name
-        
+
 def trimZeros(str):
     for i in range(len(str))[::-1]:
         if str[i] != '\x00':
             return str[:i+1]
     return ''
-    
+
 def main(args):
     from optparse import OptionParser
     op = OptionParser("usage: %prog [options] files")
-    op.add_option('','--trim-zeros', dest='trimZeros', action='store_true', 
+    op.add_option('','--trim-zeros', dest='trimZeros', action='store_true',
                   default=False,
                   help='trim trailing zeros')
     op.add_option('','--write-ints', dest='writeInts', action='store_true',
                   default=False,
                   help='convert 4-byte sequences to integers')
-                  
+
     op.add_option('','--verbose', dest='verbose', action='store_true',
                   default=False,
                   help='Show verbose output')
-    
+
     opts,args = op.parse_args()
     if not args and not len(args) is 1:
         op.error("incorrect number of arguments")
@@ -112,7 +112,7 @@ def main(args):
 
     with open('out.txt', 'w') as resfile:
         for file in filter(lambda f: f.endswith('.ktest'), os.listdir(arg)):
-            file = arg + os.sep + file        
+            file = arg + os.sep + file
             b = KTest.fromfile(file)
             pos = 0
             if opts.verbose:
@@ -123,15 +123,15 @@ def main(args):
                 else:
                     out = data
 
-                if opts.writeInts and len(data) == 4: 
+                if opts.writeInts and len(data) == 4:
                     print('error on data:')
-                    print('%r' % struct.unpack('i',out)[0])             
+                    print('%r' % struct.unpack('i',out)[0])
                     exit()
                 else:
                     vals = map(lambda x: str(ord(x[1])), filter(lambda x: x[0] % 4 == 0,enumerate(out)))
                     resfile.write(', '.join(vals) + '\n')
                     if opts.verbose:
-						print('%s' % vals) 
+						print('%s' % vals)
 
 
 if __name__=='__main__':

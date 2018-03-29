@@ -418,10 +418,12 @@ int main()
     {
         // read input
         int input;
-        scanf("%d", &input);        
+        int ret = scanf("%d", &input);
+        if (ret != 1)
+            return 0;
         // operate eca engine
         if((input != 2) && (input != 5) && (input != 3) && (input != 1) && (input != 4))
-          return -2;
+          return 0;
         calculate_output(input);
     }
 }
