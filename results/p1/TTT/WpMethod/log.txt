@@ -1,0 +1,47 @@
+0: Fri Mar 30 11:13:29 CEST 2018
+Hypothesis size: 1 states
+learning queries/symbols: 5/5(5/5 this learning round)
+testing queries/symbols: 24/38(19/33 this testing round)
+
+1: Fri Mar 30 11:13:29 CEST 2018
+Hypothesis size: 2 states
+learning queries/symbols: 38/71(14/33 this learning round)
+testing queries/symbols: 64/152(26/81 this testing round)
+
+2: Fri Mar 30 11:13:31 CEST 2018
+Hypothesis size: 8 states
+learning queries/symbols: 207/898(143/746 this learning round)
+testing queries/symbols: 473/2370(266/1472 this testing round)
+
+3: Fri Mar 30 11:13:36 CEST 2018
+Hypothesis size: 11 states
+learning queries/symbols: 544/2822(71/452 this learning round)
+testing queries/symbols: 606/3151(62/329 this testing round)
+
+4: Fri Mar 30 11:13:39 CEST 2018
+Hypothesis size: 16 states
+learning queries/symbols: 779/4210(173/1059 this learning round)
+testing queries/symbols: 910/4941(131/731 this testing round)
+
+5: Fri Mar 30 11:13:41 CEST 2018
+Hypothesis size: 17 states
+learning queries/symbols: 936/5132(26/191 this learning round)
+testing queries/symbols: 1103/6084(167/952 this testing round)
+
+6: Fri Mar 30 11:13:43 CEST 2018
+Hypothesis size: 18 states
+learning queries/symbols: 1133/6258(30/174 this learning round)
+testing queries/symbols: 1185/6557(52/299 this testing round)
+
+7: Fri Mar 30 11:13:45 CEST 2018
+Hypothesis size: 20 states
+learning queries/symbols: 1244/6989(59/432 this learning round)
+testing queries/symbols: 1452/8201(208/1212 this testing round)
+
+8: Fri Mar 30 11:13:48 CEST 2018
+Hypothesis size: 21 states
+learning queries/symbols: 1487/8463(35/262 this learning round)
+testing queries/symbols: 7871/58154(6384/49691 this testing round)
+
+Finished learning!
+Finished in 129 seconds

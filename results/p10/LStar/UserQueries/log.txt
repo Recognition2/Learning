@@ -1,0 +1,52 @@
+0: Fri Mar 30 11:13:32 CEST 2018
+Hypothesis size: 10 states
+learning queries/symbols: 305/1155(305/1155 this learning round)
+testing queries/symbols: 324/1518(19/363 this testing round)
+
+1: Fri Mar 30 11:14:14 CEST 2018
+Hypothesis size: 45 states
+learning queries/symbols: 2146/19983(1822/18465 this learning round)
+testing queries/symbols: 2158/20193(12/210 this testing round)
+
+2: Fri Mar 30 11:15:47 CEST 2018
+Hypothesis size: 64 states
+learning queries/symbols: 5504/61880(3346/41687 this learning round)
+testing queries/symbols: 5668/64919(164/3039 this testing round)
+
+3: Fri Mar 30 11:16:28 CEST 2018
+Hypothesis size: 71 states
+learning queries/symbols: 7170/80604(1502/15685 this learning round)
+testing queries/symbols: 7315/83267(145/2663 this testing round)
+
+4: Fri Mar 30 11:17:18 CEST 2018
+Hypothesis size: 75 states
+learning queries/symbols: 8941/103209(1626/19942 this learning round)
+testing queries/symbols: 10675/135287(1734/32078 this testing round)
+
+5: Fri Mar 30 11:19:05 CEST 2018
+Hypothesis size: 80 states
+learning queries/symbols: 12162/152978(1487/17691 this learning round)
+testing queries/symbols: 12543/160059(381/7081 this testing round)
+
+6: Fri Mar 30 11:20:32 CEST 2018
+Hypothesis size: 87 states
+learning queries/symbols: 14774/192438(2231/32379 this learning round)
+testing queries/symbols: 19294/276098(4520/83660 this testing round)
+
+7: Fri Mar 30 11:24:46 CEST 2018
+Hypothesis size: 98 states
+learning queries/symbols: 22010/309555(2716/33457 this learning round)
+testing queries/symbols: 24635/358388(2625/48833 this testing round)
+
+8: Fri Mar 30 11:28:12 CEST 2018
+Hypothesis size: 104 states
+learning queries/symbols: 27983/404653(3348/46265 this learning round)
+testing queries/symbols: 49814/809349(21831/404696 this testing round)
+
+9: Fri Mar 30 11:43:26 CEST 2018
+Hypothesis size: 110 states
+learning queries/symbols: 51330/829034(1516/19685 this learning round)
+testing queries/symbols: 140416/2479517(89086/1650483 this testing round)
+
+Finished learning!
+Finished in 5350 seconds

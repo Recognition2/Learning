@@ -1,0 +1,7 @@
+0: Fri Mar 30 11:13:38 CEST 2018
+Hypothesis size: 21 states
+learning queries/symbols: 635/3770(635/3770 this learning round)
+testing queries/symbols: 7019/53461(6384/49691 this testing round)
+
+Finished learning!
+Finished in 118 seconds

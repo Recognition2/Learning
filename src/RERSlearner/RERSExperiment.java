@@ -65,7 +65,7 @@ public class RERSExperiment {
      * @throws IOException
      */
     public static void run(ExperimentSetup exp, LearningMethod lm, TestingMethod tm) {
-        SUL<String, String> sul = exp.getSUL();
+        final SUL<String, String> sul = exp.getSUL();
         try {
             runControlledExperiment(sul, lm, tm, exp.inputs, exp.resultFile, exp.in, exp.out);
         } catch (IOException e) {
@@ -82,20 +82,19 @@ public class RERSExperiment {
     }
 
     public static void main(String[] args) throws IOException {
-        LearningMethod[] learningMethods = {TTT, RivestSchapire, KearnsVazirani, LStar};
-        TestingMethod[] testingMethods = {UserQueries, WMethod, WpMethod, RandomWalk};
-        int count = 0;
-        int[] problems = {10, 1, 11, 2};
+        final LearningMethod[] learningMethods = {TTT, RivestSchapire, KearnsVazirani, LStar};
+        final TestingMethod[] testingMethods = {WpMethod, RandomWalk, WMethod, UserQueries};
+        final int[] problems = {10, 1};
 
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
+//        ExecutorService executorService = Executors.newFixedThreadPool(4);
 
         for (int p : problems) {
-            for (TestingMethod testingMethod : testingMethods) {
-                for (LearningMethod learningMethod : learningMethods) {
+            for (LearningMethod learningMethod : learningMethods) {
+                for (TestingMethod testingMethod : testingMethods) {
 
-                    executorService.execute(() -> {
+                    new Thread(() -> {
                         // Set up inputs
-                        ImmutableSet < String > inputs = (p == 1 || p == 10) ? ImmutableSet.of("1", "2", "3", "4", "5") :
+                        ImmutableSet <String> inputs = (p == 1 || p == 10) ? ImmutableSet.of("1", "2", "3", "4", "5") :
                                 ImmutableSet.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
 
                         // Get start time
@@ -119,10 +118,10 @@ public class RERSExperiment {
                         PrintStream stream = experiment.out;
                         stream.println("Finished in " + end + " seconds");
                         stream.close();
-                    });
+                    }).start();
                 }
             }
         }
-        executorService.shutdown();
+//        executorService.shutdown();
     }
 }

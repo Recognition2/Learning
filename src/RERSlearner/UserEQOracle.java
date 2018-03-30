@@ -23,10 +23,13 @@ public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?
 
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> allowedInputs) {
-        System.out.println("Enter space-separated input sequence to try as a counter-example, or 'stop' to stop learning");
+//        System.out.println("Enter space-separated input sequence to try as a counter-example, or 'stop' to stop learning");
         Scanner userInputScanner = new Scanner(in);
         do {
-//            if (userInputScanner.hasNext()) return null;
+            if (!userInputScanner.hasNext()) {
+                System.out.println("Stopped learning, no more possible counter-examples were provided.");
+                return null;
+            }
             String userInput = userInputScanner.nextLine();
             if (userInput.equals("stop")) {
                 return null;
@@ -46,7 +49,7 @@ public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?
                     Word<String> input =  Word.fromList(inputs);
                     Word<String> hypOutput = hypothesis.computeOutput(input);
                     Word<String> sulOutput = sulOutput(input);
-                    System.out.println("SUL output: " + sulOutput);
+//                    System.out.println("SUL output: " + sulOutput);
                     if (!hypOutput.equals(sulOutput)) {
                         System.out.println();
                         return new DefaultQuery<String, Word<String>>(Word.fromList(Collections.emptyList()), input, sulOutput);
